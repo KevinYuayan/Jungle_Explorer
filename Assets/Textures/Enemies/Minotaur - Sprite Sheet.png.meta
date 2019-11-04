@@ -13,10 +13,10 @@ TextureImporter:
     second: Minotaur - Idle_2
   - first:
       213: -7291498848502609278
-    second: Minotaur - Sprite Sheet_3
+    second: Minotaur - Idle_3
   - first:
       213: 5545791981575950956
-    second: Minotaur - Sprite Sheet_4
+    second: Minotaur - Idle_4
   - first:
       213: 2695833335711562302
     second: Minotaur - Run_0
@@ -521,7 +521,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Minotaur - Sprite Sheet_3
+      name: Minotaur - Idle_3
       rect:
         serializedVersion: 2
         x: 316
@@ -542,7 +542,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Minotaur - Sprite Sheet_4
+      name: Minotaur - Idle_4
       rect:
         serializedVersion: 2
         x: 412

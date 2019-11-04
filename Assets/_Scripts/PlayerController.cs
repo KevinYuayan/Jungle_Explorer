@@ -3,11 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using Util;
 
+/// <summary>
+/// File Name: PlayerController.cs
+/// Author: Kevin Yuayan
+/// Last Modified by: Kevin Yuayan
+/// Date Last Modified: Nov. 3, 2019
+/// Description: Controller for the Player Object
+/// Revision History:
+/// </summary>
 public class PlayerController : MonoBehaviour
 {
 
     public PlayerAnimState playerAnimState;
     public PlayerJumpState playerJumpState;
+
+    [Header("GameObjects")]
+    public GameObject gameControllerObject;
 
     [Header("Object Properties")]
     public Animator playerAnimator;
@@ -23,15 +34,19 @@ public class PlayerController : MonoBehaviour
 
     [Header("Sounds")]
     public AudioSource jumpSound;
-    public AudioSource coinSound;
+    public AudioSource pickupSound;
 
     private float jumpCooldownTime = 0.0f;
     //player can only jump every 0.5s
     private float jumpCooldown = 0.5f;
 
+    private GameController gameController;
+
+
     // Start is called before the first frame update
     void Start()
     {
+        gameController = gameControllerObject.GetComponent<GameController>();
         playerAnimState = PlayerAnimState.IDLE;
         isGrounded = false;
     }
@@ -79,11 +94,11 @@ public class PlayerController : MonoBehaviour
         if (Input.GetAxis("Horizontal") > 0)
         {
             transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            playerRigidBody.AddForce(new Vector2(1, 0) * moveForce);
 
             if (isGrounded)
             {
                 playerAnimState = PlayerAnimState.RUN;
-                playerRigidBody.AddForce(new Vector2(1, 1) * moveForce);
             }
         }
 
@@ -91,10 +106,11 @@ public class PlayerController : MonoBehaviour
         if (Input.GetAxis("Horizontal") < 0)
         {
             transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+            playerRigidBody.AddForce(new Vector2(-1, 0) * moveForce);
+
             if (isGrounded)
             {
                 playerAnimState = PlayerAnimState.RUN;
-                playerRigidBody.AddForce(new Vector2(-1, 1) * moveForce);
             }
         }
         jumpCooldownTime += Time.deltaTime;
@@ -102,6 +118,7 @@ public class PlayerController : MonoBehaviour
         if ((Input.GetAxis("Jump") > 0) && (isGrounded) && jumpCooldownTime >= jumpCooldown)
         {
             playerAnimState = PlayerAnimState.JUMP;
+            jumpSound.Play();
             playerRigidBody.AddForce(Vector2.up * jumpForce);
             isGrounded = false;
             jumpCooldownTime = 0.0f;
@@ -118,11 +135,16 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        //if (other.gameObject.CompareTag("Coin"))
-        //{
-        //    // update the scoreboard - add points
-        //    coinSound.Play();
-        //    Destroy(other.gameObject);
-        //}
+
+        if (other.gameObject.tag == "Enemy")
+        {
+            gameController.Lives -= 1;
+        }
+        if (other.gameObject.CompareTag("Fruit"))
+        {
+            pickupSound.Play();
+            other.gameObject.SetActive(false);
+            gameController.Score += 100;
+        }
     }
 }
